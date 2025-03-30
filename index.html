@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en"></html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Advanced FiveM anti-cheat solution with real-time detection, minimal performance impact, and comprehensive protection against all types of cheating.">
+    <title>Vape Security | FiveM Anti-Cheat Solution</title>
+    <style>
+        /* Color Scheme */
+        :root {
+            --primary: #0066ff;
+            --primary-dark: #00334f;
+            --primary-darker: #00162b;
+            --primary-darkest: #01202d;
+            --accent: #00c8ff;
+            --accent-dark: #0095c7;
+            --light: #f5f9ff;
+            --dark: #0a1a2d;
+            --text: #e6f1ff;
+            --text-dark: #8892b0;
+            --card-bg: #0e2238;
+            --success: #00e676;
+            --warning: #ff9100;
+            --error: #ff1744;
+        }
+        
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        /* Header */
+        header {
+            background-color: rgba(10, 26, 45, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 102, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .logo img {
+            height: 36px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover img {
+            transform: rotate(15deg);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--accent);
+            animation: underline 0.3s ease forwards;
+        }
+        
+        @keyframes underline {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-left: 1.5rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: 1px solid var(--primary);
+            box-shadow: 0 4px 6px rgba(0, 102, 255, 0.1);
+        }
+        
+        .btn-primary:hover {
+            background-color: #0052cc;
+            border-color: #0052cc;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 102, 255, 0.2);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(0, 102, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 102, 255, 0.1);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent);
+            color: var(--primary-darkest);
+            border: 1px solid var(--accent);
+            font-weight: 700;
+        }
+        
+        .btn-accent:hover {
+            background-color: var(--accent-dark);
+            border-color: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(to bottom, var(--primary-darkest), rgba(1, 32, 45, 0.8)), 
+                        url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            padding-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to top, var(--dark), transparent);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: linear-gradient(to right, var(--text), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            color: var(--text-dark);
+            max-width: 600px;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .hero-stats {
+            position: absolute;
+            bottom: 40px;
+            left: 5%;
+            right: 5%;
+            display: flex;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(0, 102, 255, 0.2);
+            z-index: 2;
+        }
+        
+        .stat-item {
+            text-align: center;
+            position: relative;
+            padding: 0 1rem;
+        }
+        
+        .stat-item h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .stat-item h3 i {
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .stat-item p {
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 6rem 5%;
+            background-color: var(--primary-darker);
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+        
+        .section-title p {
+            color: var(--text-dark);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 102, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 0;
+            background: var(--accent);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 102, 255, 0.2);
+        }
+        
+        .feature-card:hover::before {
+            height: 100%;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .feature-card p {
+            color: var(--text-dark);
+        }
+        
+        /* Pricing Section */
+        .pricing {
+            padding: 6rem 5%;
+            background-color: var(--dark);
+            position: relative;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+        }
+        
+        .pricing-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2.5rem;
+            border: 1px solid rgba(0, 102, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pricing-card.popular {
+            border-color: var(--accent);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 200, 255, 0.2);
+        }
+        
+        .pricing-card.popular::before {
+            content: "POPULAR";
+            position: absolute;
+            top: 0;
+            right: 20px;
+            background-color: var(--accent);
+            color: var(--primary-darkest);
+            padding: 0.3rem 1.5rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .price span {
+            font-size: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .pricing-features {
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+        
+        .pricing-features li {
+            list-style: none;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .pricing-features li::before {
+            content: "✓";
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .pricing-features li.disabled {
+            opacity: 0.5;
+        }
+        
+        .pricing-features li.disabled::before {
+            content: "✗";
+            color: var(--text-dark);
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 6rem 5%;
+            background-color: var(--primary-darker);
+            position: relative;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+        }
+        
+        .testimonial-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 102, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 102, 255, 0.1);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .testimonial-text::before {
+            content: '"';
+            position: absolute;
+            left: 0;
+            top: -10px;
+            font-size: 3rem;
+            color: rgba(0, 200, 255, 0.2);
+            font-family: serif;
+            line-height: 1;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #00334f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .author-info h4 {
+            color: white;
+            margin-bottom: 0.2rem;
+        }
+        
+        .author-info p {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+        
+        /* Demo Section */
+        .demo {
+            padding: 6rem 5%;
+            background-color: var(--dark);
+            text-align: center;
+        }
+        
+        .demo-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .demo-video {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            margin: 2rem 0;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .demo-video iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 6rem 5%;
+            background: linear-gradient(135deg, var(--primary-darkest), var(--primary-darker));
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,200,255,0.1) 0%, transparent 70%);
+            z-index: 1;
+        }
+        
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .cta p {
+            color: var(--text-dark);
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-darkest);
+            padding: 4rem 5% 2rem;
+            border-top: 1px solid rgba(0, 102, 255, 0.1);
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-logo img {
+            height: 30px;
+        }
+        
+        .footer-about p {
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .footer-links h3 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .footer-links h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: var(--text-dark);
+            transition: color 0.3s;
+            font-size: 0.95rem;
+            display: inline-block;
+            padding: 0.2rem 0;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+            transform: translateX(5px);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(0, 102, 255, 0.1);
+            color: var(--text-dark);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--accent);
+            color: var(--primary-darkest);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 4rem;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 102, 255, 0.1);
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--card-bg);
+            color: var(--text);
+            text-align: center;
+            border-radius: 6px;
+            padding: 0.5rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            border: 1px solid rgba(0, 102, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: 2rem;
+                justify-content: center;
+            }
+            
+            .stat-item {
+                flex: 1 1 160px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem 5%;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .auth-buttons {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-stats {
+                position: relative;
+                margin-top: 2rem;
+                bottom: auto;
+            }
+            
+            .stat-item h3 {
+                font-size: 1.8rem;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-card.popular {
+                transform: none;
+            }
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: var(--accent);
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="logo-icon.png" sizes="32x32">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <img src="logo-icon.png" alt="Vape Security Logo">
+                <span>Vape Security</span>
+            </a>
+            <div class="nav-links">
+                <a href="#features" class="active">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#demo">Demo</a>
+                <a href="documentation.html">Documentation</a>
+                <a href="blog.html">Blog</a>
+                <div class="auth-buttons">
+                    <a href="https://vapesecurity.de/login" class="btn btn-outline">Login</a>
+                    <a href="https://vapesecurity.de/register" class="btn btn-primary">Register</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Advanced FiveM Anti-Cheat Protection</h1>
+            <p>Secure your FiveM server with our sophisticated anti-cheat solution. Detect and prevent cheating in real-time with minimal performance impact.</p>
+            <div class="hero-buttons">
+                <a href="#pricing" class="btn btn-primary btn-accent">Get Started <i class="fas fa-arrow-right"></i></a>
+                <a href="https://vapesecurity.de/discord" class="btn btn-outline"><i class="fab fa-discord"></i> Join Discord</a>
+            </div>
+        </div>
+        
+        <div class="hero-stats">
+            <div class="stat-item">
+                <h3><i class="fas fa-server"></i> 500+</h3>
+                <p>Protected Servers</p>
+            </div>
+            <div class="stat-item">
+                <h3><i class="fas fa-shield-alt"></i> 10M+</h3>
+                <p>Cheat Detections</p>
+
+            </div>
+            <div class="stat-item">
+                <h3><i class="fas fa-check-circle"></i> 99%</h3>
+                <p>Detection Accuracy</p>
+            </div>
+        </div>
+        
+        <a href="#features" class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </a>
+    </section>
+
+    <section class="features" id="features">
+        <div class="section-title">
+            <h2>Powerful Anti-Cheat Features</h2>
+            <p>Comprehensive protection against all types of FiveM cheating with minimal performance impact</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Real-time Detection</h3>
+                <p>Advanced algorithms detect and block cheats as they happen, preventing damage to your server's economy and player experience.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <h3>Performance Optimized</h3>
+                <p>Lightweight implementation with less than 1% CPU overhead that won't affect your server's performance or player experience.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-sync-alt"></i></div>
+                <h3>Frequent Updates</h3>
+                <p>Daily signature updates to stay ahead of new cheating methods and keep your server protected against the latest threats.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-sliders-h"></i></div>
+                <h3>Customizable</h3>
+                <p>Configure detection sensitivity, responses, and notifications to match your server's specific needs and rules.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-user-secret"></i></div>
+                <h3>Stealth Detection</h3>
+                <p>Detects even the most sophisticated private cheats that try to hide their presence using advanced memory scanning.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                <h3>Detailed Analytics</h3>
+                <p>Comprehensive logs, statistics, and reporting tools to track cheating attempts and identify patterns in player behavior.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+        <div class="section-title">
+            <h2>Simple, Transparent Pricing</h2>
+            <p>Choose the plan that fits your server's needs and budget</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Basic</h3>
+                <div class="price">€15<span>/month</span></div>
+                <ul class="pricing-features">
+                    <li>Core cheat protection</li>
+                    <li>Up to 32 player slots</li>
+                    <li>Basic detection methods</li>
+                    <li>Email support (48h response)</li>
+                    <li>Weekly signature updates</li>
+                    <li class="disabled">Custom configurations</li>
+                    <li class="disabled">Priority support</li>
+                </ul>
+                <a href="https://vapesecurity.de/register" class="btn btn-outline">Get Started</a>
+            </div>
+            <div class="pricing-card popular">
+                <h3>Professional</h3>
+                <div class="price">€25<span>/month</span></div>
+                <ul class="pricing-features">
+                    <li>Advanced detection methods</li>
+                    <li>Up to 64 player slots</li>
+                    <li>Priority support (24h response)</li>
+                    <li>Discord support channel</li>
+                    <li>Daily signature updates</li>
+                    <li>Customizable settings</li>
+                    <li class="disabled">Dedicated manager</li>
+                </ul>
+                <a href="https://vapesecurity.de/register" class="btn btn-primary">Get Started</a>
+            </div>
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <div class="price">€50<span>/month</span></div>
+                <ul class="pricing-features">
+                    <li>Complete protection suite</li>
+                    <li>Unlimited player slots</li>
+                    <li>24/7 priority support</li>
+                    <li>Custom configurations</li>
+                    <li>Real-time signature updates</li>
+                    <li>Dedicated account manager</li>
+                    <li>White-label options</li>
+                </ul>
+                <a href="https://vapesecurity.de/contact" class="btn btn-outline">Contact Us</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo" id="demo">
+        <div class="section-title">
+            <h2>See It In Action</h2>
+            <p>Watch how Vape Security detects and prevents cheating in real-time</p>
+        </div>
+        <div class="demo-container">
+            <div class="demo-video">
+                <iframe src="https://streamable.com/e/tqkprl" width="360" height="640" frameborder="0" allowfullscreen></iframe>
+
+            </div>                
+            <a href="#pricing" class="btn btn-primary btn-accent">Start Protecting Your Server</a>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <div class="section-title">
+            <h2>Trusted by Server Owners</h2>
+            <p>Don't just take our word for it - hear from our customers</p>
+        </div>
+        <div class="testimonial-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "Since implementing Vape Security, we've seen a 90% reduction in cheating incidents. The difference in our server's community has been night and day. Legitimate players are staying longer and our admin team spends less time dealing with cheaters."
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">MR</div>
+                    <div class="author-info">
+                        <h4>Marcus R.</h4>
+                        <p>RP Server Owner</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "The detection accuracy is impressive. It catches things other anti-cheats miss without creating false positives that annoy legitimate players. Our player base has grown 40% since we switched to Vape Security."
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">SK</div>
+                    <div class="author-info">
+                        <h4>Sarah K.</h4>
+                        <p>Racing Server Admin</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "What sets Vape apart is their responsiveness. When new cheats emerge, they're usually already working on a detection method before we even report it. Their Discord support is incredibly helpful too."
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">DL</div>
+                    <div class="author-info">
+                        <h4>David L.</h4>
+                        <p>FPS Server Owner</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="cta-container">
+            <h2>Ready to Secure Your Server?</h2>
+            <p>Join hundreds of server owners who trust Vape Security to protect their communities from cheaters and provide a fair gaming environment.</p>
+            <div class="hero-buttons">
+                <a href="#pricing" class="btn btn-primary btn-accent">Get Started Now</a>
+                <p>Join hundreds of server owners who trust Vape Security to protect their communities from cheaters and provide a fair gaming environment.</p>
+                <div class="hero-buttons">
+                    <a href="#pricing" class="btn btn-primary btn-accent">Get Started Now</a>
+                    <a href="https://vapesecurity.de/discord" class="btn btn-outline" style="height: 50px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-comments"></i> Chat With Us</a>
+                </div>
+            </div>
+        </section>
+    
+        <footer>
+            <div class="footer-content">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <div class="footer-logo">
+                            <img src="logo-icon.png" alt="Vape Security Logo">
+                            <span>Vape Security</span>
+                        </div>
+                        
+                    </div>
+                    <div class="footer-about">
+                        <p>Advanced FiveM anti-cheat solution protecting servers worldwide since 2018. Our mission is to create fair gaming environments for all players.</p>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://vapesecurity.de/discord" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                        <a href="https://twitter.com/vapesecurity" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="https://github.com/vapesecurity" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="https://youtube.com/vapesecurity" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#demo">Demo</a></li>
+                        <li><a href="documentation.html">Documentation</a></li>
+                        <li><a href="https://vapesecurity.de/download">Download</a></li>
+                        <li><a href="https://vapesecurity.de/changelog">Changelog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="https://vapesecurity.de/faq">FAQ</a></li>
+                        <li><a href="https://vapesecurity.de/support">Support</a></li>
+                        <li><a href="https://vapesecurity.de/status">Status</a></li>
+                        <li><a href="https://vapesecurity.de/whitelabel">White Label</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="https://vapesecurity.de/about">About</a></li>
+                        <li><a href="https://vapesecurity.de/contact">Contact</a></li>
+                        <li><a href="https://vapesecurity.de/careers">Careers</a></li>
+                        <li><a href="https://vapesecurity.de/terms">Terms</a></li>
+                        <li><a href="https://vapesecurity.de/privacy">Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2023 Vape Security. All rights reserved. FiveM is a registered trademark of CitizenFX Collective.
+            </div>
+        </footer>
+    
+        <script>
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        
+                        // Update URL without jumping
+                        if (history.pushState) {
+                            history.pushState(null, null, this.getAttribute('href'));
+                        } else {
+                            location.hash = this.getAttribute('href');
+                        }
+                    }
+                });
+            });
+    
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 50) {
+                    header.style.backgroundColor = 'rgba(10, 26, 45, 0.98)';
+                    header.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.1)';
+                } else {
+                    header.style.backgroundColor = 'rgba(10, 26, 45, 0.95)';
+                    header.style.boxShadow = 'none';
+                }
+            });
+    
+            // Active link highlighting
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            window.addEventListener('scroll', () => {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    
+                    if (pageYOffset >= (sectionTop - 200)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+    
+            // Animation on scroll
+            const animateOnScroll = function() {
+                const elements = document.querySelectorAll('.feature-card, .pricing-card, .testimonial-card');
+                
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.2;
+                    
+                    if (elementPosition < screenPosition) {
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }
+                });
+            };
+    
+            // Set initial state for animated elements
+            document.querySelectorAll('.feature-card, .pricing-card, .testimonial-card').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.6s ease';
+            });
+    
+            window.addEventListener('scroll', animateOnScroll);
+            window.addEventListener('load', animateOnScroll);
+    
+            // Tooltip functionality
+            document.querySelectorAll('.tooltip').forEach(tooltip => {
+                tooltip.addEventListener('mouseenter', function() {
+                    const tooltipText = this.querySelector('.tooltiptext');
+                    tooltipText.style.visibility = 'visible';
+                    tooltipText.style.opacity = '1';
+                });
+                
+                tooltip.addEventListener('mouseleave', function() {
+                    const tooltipText = this.querySelector('.tooltiptext');
+                    tooltipText.style.visibility = 'hidden';
+                    tooltipText.style.opacity = '0';
+                });
+            });
+    
+            // Stat counter animation
+            const statItems = document.querySelectorAll('.stat-item h3');
+            const statsSection = document.querySelector('.hero-stats');
+            let statsAnimated = false;
+    
+            function animateStats() {
+                if (statsAnimated) return;
+                
+                const statsPosition = statsSection.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.5;
+                
+                if (statsPosition < screenPosition) {
+                    statsAnimated = true;
+                    
+                    statItems.forEach(stat => {
+                        const target = parseInt(stat.textContent.replace(/\D/g, ''));
+                        const suffix = stat.textContent.replace(/[0-9]/g, '');
+                        let count = 0;
+                        const duration = 2000;
+                        const increment = target / (duration / 16);
+                        
+                        const updateCount = () => {
+                            count += increment;
+                            if (count < target) {
+                                stat.textContent = Math.floor(count) + suffix;
+                                requestAnimationFrame(updateCount);
+                            } else {
+                                stat.textContent = target + suffix;
+                            }
+                        };
+                        
+                        updateCount();
+                    });
+                }
+            }
+    
+            window.addEventListener('scroll', animateStats);
+            window.addEventListener('load', animateStats);
+        </script>
+    </body>
+    </html>
